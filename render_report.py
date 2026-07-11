@@ -195,7 +195,7 @@ HTML_TEMPLATE = """<!doctype html>
 </header>
 {body}
 <footer class="report-footer">
-Generated {generated} &middot; Built by Claude + Codex &middot; Educational only, not financial advice
+Generated {generated} &middot; Built by Claude &middot; Educational only, not financial advice
 </footer>
 </div>
 </body>

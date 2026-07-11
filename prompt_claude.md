@@ -1,11 +1,9 @@
 # Claude Analyst Prompt
 
-This is your job: read `packet.json` and turn it into a premarket report. You
-are one of two independent passes (Codex runs the same job separately on the
-same packet). A later merge step lines up your take against Codex's and
-writes the final report from `REPORT_TEMPLATE.md`. You are not writing the
-final report here. You are writing your own independent read, in the shape
-that the merge step expects.
+This is your job: read `packet.json` and turn it into the full premarket
+report, following the skeleton in `REPORT_TEMPLATE.md`. This is a solo
+Claude pass, there is no second AI and no merge step, you are writing the
+final report end to end.
 
 ## Inputs
 
@@ -16,10 +14,9 @@ that the merge step expects.
   backstory. You do not need it to do the math, the packet already computed
   `day_eligible` and `swing_eligible` per ticker. Use it to understand WHY a
   name is on a list, not to recompute anything.
-- `REPORT_TEMPLATE.md` has the full report skeleton (12 sections). You are
-  only producing sections 3 through 11 of that skeleton. Skip the title,
-  the disclaimer, and section 12 ("Where the two brains landed"), those get
-  added at merge time once your pass and Codex's pass both exist.
+- `REPORT_TEMPLATE.md` has the full report skeleton. You produce all of
+  it: the title, the disclaimer, and every section through Skips and
+  Traps.
 
 ## Hard rules, read these twice
 
@@ -129,10 +126,6 @@ Score each name by confluence of:
    the trigger or already extended way past PMH/VWAP? For swing names, is
    it holding above the open/200sma/prior high cleanly or barely scraping
    over?
-4. **Cross-brain agreement.** You're running solo right now, Codex hasn't
-   weighed in yet, so you cannot score this factor. Score conviction off
-   the first three only, and treat it as provisional. The merge step will
-   re-weight conviction once it can compare your read against Codex's.
 
 Use the green/yellow/red key from `REPORT_TEMPLATE.md`:
 - 🟢 clean catalyst, macro not fighting it, price sitting right at the
@@ -146,35 +139,39 @@ Use the green/yellow/red key from `REPORT_TEMPLATE.md`:
 
 Write these sections, in this order, nothing before or after:
 
-1. **Summary** - the tape in one line (from `market_snapshot`), the catch
+1. **Title and subtitle** - `# Premarket Report` and a dated subtitle
+   noting this is a Claude solo pass.
+2. **Disclaimer** - one line: the watchlist comes from deterministic
+   rules, Claude judges the quality of the setups, not whether you should
+   trade them, not financial advice.
+3. **Summary** - the tape in one line (from `market_snapshot`), the catch
    we're watching in one line (your biggest single flag from the packet,
-   trap or otherwise). Skip the two-brain verdict line, that's added at
-   merge.
-2. **Pre-Market Gappers** - every gapper in the packet, each with its full
+   trap or otherwise).
+4. **Pre-Market Gappers** - every gapper in the packet, each with its full
    catalyst headline (or "no catalyst confirmed" if `catalyst_found` is
    false).
-3. **Day Trading Watchlist** - table as specified above.
-4. **Swing Watchlist** - table as specified above.
-5. **Market Trends of the Day** - read off `market_snapshot` (indices,
+5. **Day Trading Watchlist** - table as specified above.
+6. **Swing Watchlist** - table as specified above.
+7. **Market Trends of the Day** - read off `market_snapshot` (indices,
    VIX, rates, oil, dollar) and the shape of the gapper list (how many up
    vs down, any cluster of names sharing a theme). Packet data only.
-6. **Technical Signals for Today** - only use technical fields that
+8. **Technical Signals for Today** - only use technical fields that
    actually exist in the packet: `sma_200`, `vwap`, `prior_day_high`,
    `hod`, `lod`, `premarket_high`, `rvol`. Do not invent indicators the
    packet doesn't carry (no RSI, no MACD, nothing that isn't in the data).
-7. **Economic Data, Rates and the Fed** - walk `econ_calendar.today`,
+9. **Economic Data, Rates and the Fed** - walk `econ_calendar.today`,
    each event's `time_et`, `title`, `forecast` vs `previous`. If the list
    is empty, say so plainly, it's a light data day.
-8. **Coming Up** - walk `econ_calendar.tomorrow` the same way, then check
-   every gapper's `next_earnings_date` against `tomorrow_date` and list any
-   matches as tomorrow's earnings. Note plainly that this is each gapper's
-   own earnings date, not a full market-wide earnings calendar (see
-   `gaps_to_fill`).
-9. **Skips and Traps** - list every `catalyst_found: false` gapper as a
-   Skip with a one-line reason. List every trap you caught in the hard
-   rules step, quoting the headline. If any gapper had a real catalyst but
-   still missed both eligibility flags, mention it briefly too so nothing
-   in the packet just silently disappears from the report.
+10. **Coming Up** - walk `econ_calendar.tomorrow` the same way, then check
+    every gapper's `next_earnings_date` against `tomorrow_date` and list any
+    matches as tomorrow's earnings. Note plainly that this is each gapper's
+    own earnings date, not a full market-wide earnings calendar (see
+    `gaps_to_fill`).
+11. **Skips and Traps** - list every `catalyst_found: false` gapper as a
+    Skip with a one-line reason. List every trap you caught in the hard
+    rules step, quoting the headline. If any gapper had a real catalyst but
+    still missed both eligibility flags, mention it briefly too so nothing
+    in the packet just silently disappears from the report.
 
 ## Voice
 
