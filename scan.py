@@ -99,10 +99,13 @@ PRIMARY_PUBLISHERS = {
     "associated press", "ap news", "axios",
 }
 
-# Generic corporate words that must not match a headline on their own,
-# because a word like "Applied" or "Advanced" will cross-match totally
-# unrelated companies.
-COMPANY_STOPWORDS = {
+# Generic corporate words that must never match a headline on their own.
+# Without this, "Applied" would count as a catalyst hit for both Applied
+# Optoelectronics (AAOI) and Applied Digital (APLD) since it is a
+# substring of both names, so a headline about one gets wrongly credited
+# to the other. Only a company-name token that is NOT in this set, plus
+# 4+ letters, is distinctive enough to stand alone as a match.
+NAME_STOP = {
     "the", "inc", "incorporated", "corp", "corporation", "co", "company",
     "holdings", "holding", "technologies", "technology", "group", "digital",
     "applied", "advanced", "strategy", "strategies", "motors", "energy",
@@ -429,8 +432,8 @@ def get_econ_calendar():
 # ---------------------------------------------------------------------
 
 def _company_tokens(name):
-    words = re.findall(r"[A-Za-z][A-Za-z0-9.'-]*", name or "")
-    return [w for w in words if len(w) >= 4 and w.lower() not in COMPANY_STOPWORDS]
+    words = re.findall(r"[A-Za-z][A-Za-z0-9']*", name or "")
+    return [w for w in words if len(w) >= 4 and w.lower() not in NAME_STOP]
 
 
 def _headline_matches_ticker(title, ticker, tokens):
