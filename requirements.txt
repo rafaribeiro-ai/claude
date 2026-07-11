@@ -1,0 +1,4 @@
+yfinance==1.5.1
+feedparser==6.0.12
+Markdown==3.10.2
+requests==2.34.2
