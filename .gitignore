@@ -4,3 +4,4 @@ __pycache__/
 packet.json
 .econ_calendar_cache.json
 reports/
+.env
