@@ -1,0 +1,62 @@
+@import 'tailwindcss';
+
+/*
+ * SmartTrade App design tokens. Dark mode is the only supported theme:
+ * this is a professional trading tool meant to sit on screen for hours,
+ * not a consumer app that needs a light mode. Tailwind v4 turns every
+ * --color-* token below into a matching utility class automatically
+ * (e.g. --color-profit -> bg-profit / text-profit / border-profit).
+ */
+@theme {
+  --color-background: #0b0e11;
+  --color-surface: #14181d;
+  --color-surface-elevated: #1c2127;
+  --color-border: #2a2f36;
+
+  --color-text-primary: #e6e9ed;
+  --color-text-secondary: #8b93a1;
+  --color-text-disabled: #4e545d;
+
+  --color-accent: #2f81f7;
+  --color-accent-muted: #1e4a82;
+
+  --color-profit: #17c67f;
+  --color-loss: #e5484d;
+  --color-warning: #e5a93d;
+
+  --color-ticker-bg: #0f1319;
+
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Consolas, monospace;
+
+  --animate-ticker-scroll: ticker-scroll 30s linear infinite;
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
